@@ -1,514 +1,642 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lavanya Beauty Parlour | Your Beauty Destination</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap');
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            scroll-behavior: smooth;
-        }
-        
-        h1, h2, h3, h4 {
-            font-family: 'Playfair Display', serif;
-        }
-        
-        .hero {
-            background: linear-gradient(rgba(255, 235, 235, 0.7), rgba(255, 235, 235, 0.7)), 
-                        url('https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80');
-            background-size: cover;
-            background-position: center;
-        }
-        
-        .service-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-        }
-        
-        .gallery-item {
-            transition: all 0.3s ease;
-        }
-        
-        .gallery-item:hover {
-            transform: scale(1.03);
-        }
-        
-        .testimonial-card {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.5s ease;
-        }
-        
-        .testimonial-card.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .fade-in {
-            animation: fadeIn 1s ease-in;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lavanya Beauty Parlour | Your Beauty Destination</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      scroll-behavior: smooth;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Playfair Display', serif;
+    }
+
+    .hero {
+      background: linear-gradient(rgba(255, 235, 235, 0.7), rgba(255, 235, 235, 0.7)),
+        url('https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80');
+      background-size: cover;
+      background-position: center;
+      min-height: 50vh; /* Reduced from full height to 50% viewport height */
+    }
+
+    .service-card {
+      padding-left: 2rem; /* Increased padding-left to fix content shift */
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: default;
+    }
+
+    .service-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+
+    .gallery-item {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .gallery-item:hover {
+      transform: scale(1.03);
+    }
+
+    /* Testimonial sliding carousel */
+
+    .testimonial-carousel {
+      position: relative;
+      overflow: hidden;
+      height: 320px; /* fixed height for consistent slide */
+    }
+
+    .testimonial-track {
+      display: flex;
+      transition: transform 1s ease;
+      will-change: transform;
+      height: 100%;
+    }
+
+    .testimonial-card {
+      flex: 0 0 100%;
+      max-width: 100%;
+      opacity: 0;
+      transform: translateX(100%);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      padding: 1.5rem;
+      box-sizing: border-box;
+      background: #fdf1f1;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      color: #831843; /* dark rose */
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .testimonial-card.active {
+      opacity: 1;
+      transform: translateX(0);
+      flex: 0 0 50%; /* Show two cards partially side-by-side */
+      max-width: 50%;
+      margin-left: 2rem;
+      margin-right: 2rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Smaller cards behind the active slide */
+
+    .testimonial-card.prev,
+    .testimonial-card.next {
+      opacity: 0.6;
+      flex: 0 0 30%;
+      max-width: 30%;
+      margin: 0 0.5rem;
+      transform: scale(0.85);
+      filter: brightness(0.9);
+      position: relative;
+      top: 15px;
+      z-index: 5;
+    }
+
+    /* Hide other cards */
+    .testimonial-card.inactive {
+      opacity: 0;
+      pointer-events: none;
+      position: absolute;
+      left: -9999px;
+      top: 0;
+      transform: translateX(100%);
+      flex: 0 0 auto;
+      max-width: none;
+    }
+
+    /* Colors and typography for star rating */
+    .stars i {
+      color: #ec4899; /* Tailwind rose-500 */
+      margin-right: 4px;
+    }
+
+    /* Center avatar and text in testimonial */
+    .testimonial-info {
+      display: flex;
+      align-items: center;
+      margin-top: 1rem;
+    }
+
+    .testimonial-info img {
+      border-radius: 9999px;
+      width: 48px;
+      height: 48px;
+      margin-right: 1rem;
+      object-fit: cover;
+      border: 2px solid #ec4899;
+    }
+
+    .testimonial-info div h4 {
+      font-weight: 600;
+      font-size: 1.125rem;
+      margin-bottom: 0.125rem;
+      color: #831843;
+    }
+
+    .testimonial-info div p {
+      font-size: 0.875rem;
+      color: #a81560;
+      opacity: 0.85;
+    }
+
+    /* Transition hover for testimonial card */
+    .testimonial-card:hover {
+      box-shadow: 0 10px 30px rgba(200,50,100,0.2);
+      cursor: grab;
+    }
+
+    /* Contact Info phone stacking fix */
+    #contact .flex.items-center > p {
+      margin: 0.125rem 0;
+      display: block;
+      line-height: 1.25rem;
+    }
+
+    /* Smooth button transitions */
+    button, a.button-link {
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+  </style>
 </head>
 <body class="bg-rose-50">
-    <!-- Navigation -->
-    <nav class="bg-white shadow-md sticky top-0 z-50">
-        <div class="container mx-auto px-6 py-3">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <a href="#" class="text-2xl font-bold text-rose-800">Lavanya Beauty Parlour</a>
-                </div>
-                
-                <!-- Mobile menu button -->
-                <div class="md:hidden">
-                    <button id="menu-toggle" class="text-rose-800 focus:outline-none">
-                        <i class="fas fa-bars text-2xl"></i>
-                    </button>
-                </div>
-                
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex space-x-8">
-                    <a href="#home" class="text-rose-800 hover:text-rose-600 transition">Home</a>
-                    <a href="#services" class="text-rose-800 hover:text-rose-600 transition">Services</a>
-                    <a href="#gallery" class="text-rose-800 hover:text-rose-600 transition">Gallery</a>
-                    <a href="#testimonials" class="text-rose-800 hover:text-rose-600 transition">Testimonials</a>
-                    <a href="#contact" class="text-rose-800 hover:text-rose-600 transition">Contact</a>
-                </div>
-            </div>
-            
-            <!-- Mobile Menu -->
-            <div id="mobile-menu" class="hidden md:hidden py-4">
-                <a href="#home" class="block py-2 text-rose-800 hover:text-rose-600 transition">Home</a>
-                <a href="#services" class="block py-2 text-rose-800 hover:text-rose-600 transition">Services</a>
-                <a href="#gallery" class="block py-2 text-rose-800 hover:text-rose-600 transition">Gallery</a>
-                <a href="#testimonials" class="block py-2 text-rose-800 hover:text-rose-600 transition">Testimonials</a>
-                <a href="#contact" class="block py-2 text-rose-800 hover:text-rose-600 transition">Contact</a>
-            </div>
+  <!-- Navigation -->
+  <nav class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-6 py-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center">
+          <a href="#" class="text-2xl font-bold text-rose-800">Lavanya Beauty Parlour</a>
         </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section id="home" class="hero min-h-screen flex items-center justify-center text-center px-4">
-        <div class="max-w-4xl mx-auto fade-in">
-            <h1 class="text-5xl md:text-6xl font-bold text-rose-800 mb-6">Welcome to Lavanya Beauty</h1>
-            <p class="text-xl md:text-2xl text-rose-900 mb-8">Where beauty meets relaxation and your confidence is our priority</p>
-            <a href="#contact" class="bg-rose-700 hover:bg-rose-600 text-white px-8 py-3 rounded-full text-lg font-medium transition duration-300 inline-block">Book Now</a>
-        </div>
-    </section>
-
-    <!-- Services Section -->
-    <section id="services" class="py-20 bg-white">
-        <div class="container mx-auto px-6">
-            <h2 class="text-4xl font-bold text-center text-rose-800 mb-16">Our Services</h2>
-            
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-                <!-- Service 1 -->
-                <div class="service-card bg-rose-50 p-8 rounded-lg shadow-lg transition duration-300">
-                    <div class="text-rose-700 text-4xl mb-4">
-                        <i class="fas fa-cut"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-rose-800 mb-3">Hair Services</h3>
-                    <ul class="space-y-2 text-rose-900">
-                        <li class="flex justify-between border-b border-rose-100 pb-2">
-                            <span>Women's Haircut</span>
-                            <span class="font-medium">$45+</span>
-                        </li>
-                        <li class="flex justify-between border-b border-rose-100 pb-2">
-                            <span>Children's Haircut</span>
-                            <span class="font-medium">$30+</span>
-                        </li>
-                        <li class="flex justify-between border-b border-rose-100 pb-2">
-                            <span>Blowout</span>
-                            <span class="font-medium">$35+</span>
-                        </li>
-                        <li class="flex justify-between border-b border-rose-100 pb-2">
-                            <span>Full Color</span>
-                            <span class="font-medium">$75+</span>
-                        </li>
-                        <li class="flex justify-between">
-                            <span>Highlights</span>
-                            <span class="font-medium">$90+</span>
-                        </li>
-                    </ul>
-                </div>
-                
-                <!-- Service 2 -->
-                <div class="service-card bg-rose-50 p-8 rounded-lg shadow-lg transition duration-300">
-                    <div class="text-rose-700 text-4xl mb-4">
-                        <i class="fas fa-spa"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-rose-800 mb-3">Skin Care</h3>
-                    <ul class="space-y-2 text-rose-900">
-                        <li class="flex justify-between border-b border-rose-100 pb-2">
-                            <span>Basic Facial</span>
-                            <span class="font-medium">$60</span>
-                        </li>
-                        <li class="flex justify-between border-b border-rose-100 pb-2">
-                            <span>Deep Cleansing</span>
-                            <span class="font-medium">$85</span>
-                        </li>
-                        <li class="flex justify-between border-b border-rose-100 pb-2">
-                            <span>Anti-Aging</span>
-                            <span class="font-medium">$95</span>
-                        </li>
-                        <li class="flex justify-between border-b border-rose-100 pb-2">
-                            <span>Acne Treatment</span>
-                            <span class="font-medium">$90</span>
-                        </li>
-                        <li class="flex justify-between">
-                            <span>Microdermabrasion</span>
-                            <span class="font-medium">$120</span>
-                        </li>
-                    </ul>
-                </div>
-                
-                <!-- Service 3 -->
-                <div class="service-card bg-rose-50 p-8 rounded-lg shadow-lg transition duration-300">
-                    <div class="text-rose-700 text-4xl mb-4">
-                        <i class="fas fa-hand-sparkles"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-rose-800 mb-3">Nail Services</h3>
-                    <ul class="space-y-2 text-rose-900">
-                        <li class="flex justify-between border-b border-rose-100 pb-2">
-                            <span>Manicure</span>
-                            <span class="font-medium">$25+</span>
-                        </li>
-                        <li class="flex justify-between border-b border-rose-100 pb-2">
-                            <span>Pedicure</span>
-                            <span class="font-medium">$35+</span>
-                        </li>
-                        <li class="flex justify-between border-b border-rose-100 pb-2">
-                            <span>Gel Polish</span>
-                            <span class="font-medium">$15+</span>
-                        </li>
-                        <li class="flex justify-between border-b border-rose-100 pb-2">
-                            <span>Acrylic Full Set</span>
-                            <span class="font-medium">$50+</span>
-                        </li>
-                        <li class="flex justify-between">
-                            <span>Nail Art</span>
-                            <span class="font-medium">$5+</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Gallery Section -->
-    <section id="gallery" class="py-20 bg-rose-50">
-        <div class="container mx-auto px-6">
-            <h2 class="text-4xl font-bold text-center text-rose-800 mb-16">My Gallery</h2>
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Gallery Item 1 -->
-                <div class="gallery-item overflow-hidden rounded-lg shadow-lg">
-                    <img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=688&q=80" 
-                         alt="Hair Styling" class="w-full h-64 object-cover">
-                </div>
-                
-                <!-- Gallery Item 2 -->
-                <div class="gallery-item overflow-hidden rounded-lg shadow-lg">
-                    <img src="https://images.unsplash.com/photo-1527799820224-89d32fafabc6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=686&q=80" 
-                         alt="Facial Treatment" class="w-full h-64 object-cover">
-                </div>
-                
-                <!-- Gallery Item 3 -->
-                <div class="gallery-item overflow-hidden rounded-lg shadow-lg">
-                    <img src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=880&q=80" 
-                         alt="Nail Art" class="w-full h-64 object-cover">
-                </div>
-                
-                <!-- Gallery Item 4 -->
-                <div class="gallery-item overflow-hidden rounded-lg shadow-lg">
-                    <img src="https://images.unsplash.com/photo-1596704017255-ee7b3316e3f4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" 
-                         alt="Makeup Application" class="w-full h-64 object-cover">
-                </div>
-                
-                <!-- Gallery Item 5 -->
-                <div class="gallery-item overflow-hidden rounded-lg shadow-lg">
-                    <img src="https://images.unsplash.com/photo-1600334129128-685c5582fd35?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
-                         alt="Parlour Interior" class="w-full h-64 object-cover">
-                </div>
-                
-                <!-- Gallery Item 6 -->
-                <div class="gallery-item overflow-hidden rounded-lg shadow-lg">
-                    <img src="https://images.unsplash.com/photo-1600334129128-685c5582fd35?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
-                         alt="Relaxation Area" class="w-full h-64 object-cover">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonials Section -->
-    <section id="testimonials" class="py-20 bg-white">
-        <div class="container mx-auto px-6">
-            <h2 class="text-4xl font-bold text-center text-rose-800 mb-16">What My Clients Say</h2>
-            
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Testimonial 1 -->
-                <div class="testimonial-card bg-rose-50 p-8 rounded-lg shadow-md">
-                    <div class="flex items-center mb-4">
-                        <div class="text-rose-700 text-2xl mr-2">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                    </div>
-                    <p class="text-rose-900 mb-4">"The best facial I've ever had! My skin has never felt so refreshed. The esthetician was incredibly knowledgeable and made me feel completely relaxed."</p>
-                    <div class="flex items-center">
-                        <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Sarah J." class="w-12 h-12 rounded-full mr-4">
-                        <div>
-                            <h4 class="font-bold text-rose-800">Sarah J.</h4>
-                            <p class="text-rose-600 text-sm">Regular Client</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Testimonial 2 -->
-                <div class="testimonial-card bg-rose-50 p-8 rounded-lg shadow-md">
-                    <div class="flex items-center mb-4">
-                        <div class="text-rose-700 text-2xl mr-2">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                    </div>
-                    <p class="text-rose-900 mb-4">"I've been coming to Lavanay Beauty Parlour for years. Their stylist are true artists who always give me the perfect cut and color. Worth every penny!"</p>
-                    <div class="flex items-center">
-                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Michelle T." class="w-12 h-12 rounded-full mr-4">
-                        <div>
-                            <h4 class="font-bold text-rose-800">Michelle T.</h4>
-                            <p class="text-rose-600 text-sm">VIP Client</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Testimonial 3 -->
-                <div class="testimonial-card bg-rose-50 p-8 rounded-lg shadow-md">
-                    <div class="flex items-center mb-4">
-                        <div class="text-rose-700 text-2xl mr-2">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                        </div>
-                    </div>
-                    <p class="text-rose-900 mb-4">"The ambiance is so peaceful and the staff is wonderful. My manicures last longer here than anywhere else I've been. Highly recommend!"</p>
-                    <div class="flex items-center">
-                        <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Amanda K." class="w-12 h-12 rounded-full mr-4">
-                        <div>
-                            <h4 class="font-bold text-rose-800">Amanda K.</h4>
-                            <p class="text-rose-600 text-sm">New Client</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="py-20 bg-rose-800 text-white">
-        <div class="container mx-auto px-6">
-            <h2 class="text-4xl font-bold text-center mb-16">Book Your Appointment</h2>
-            
-            <div class="grid md:grid-cols-2 gap-12">
-                <div>
-                    <h3 class="text-2xl font-bold mb-6">Contact Information</h3>
-                    <div class="space-y-4">
-                        <div class="flex items-start">
-                            <i class="fas fa-map-marker-alt mt-1 mr-4 text-rose-300"></i>
-                            <p>123 Beauty Lane, Glamour City, GC 12345</p>
-                        </div>
-                        <div class="flex items-center">
-                            <i class="fas fa-phone-alt mr-4 text-rose-300"></i>
-                            <p>+91 8087442667 </p>
-                            <p>+91 74982 67821 </p>
-                        </div>
-                        <div class="flex items-center">
-                            <i class="fas fa-envelope mr-4 text-rose-300"></i>
-                            <p>shweta.sontakke05@gmail.com</p>
-                        </div>
-                        <div class="flex items-center">
-                            <i class="fas fa-clock mr-4 text-rose-300"></i>
-                            <p>Daily 11am - 8pm</p>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-12">
-                        <h3 class="text-2xl font-bold mb-6">Find Us</h3>
-                        <div class="bg-white p-1 rounded-lg shadow-lg">
-                            <!-- Google Maps Embed -->
-                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.215373510478!2d-73.9878449241646!3d40.74844097138986!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259a9b3117469%3A0xd134e199a405a163!2sEmpire%20State%20Building!5e0!3m2!1sen!2sus!4v1689877215838!5m2!1sen!2sus" 
-                                    width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                        </div>
-                    </div>
-                </div>
-                
-                <div>
-                    <form id="booking-form" class="space-y-6">
-                        <div>
-                            <label for="name" class="block mb-2 font-medium">Full Name</label>
-                            <input type="text" id="name" name="name" required 
-                                   class="w-full px-4 py-3 rounded-lg bg-rose-900 border border-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-300 text-white placeholder-rose-400">
-                        </div>
-                        
-                        <div>
-                            <label for="email" class="block mb-2 font-medium">Email</label>
-                            <input type="email" id="email" name="email" required 
-                                   class="w-full px-4 py-3 rounded-lg bg-rose-900 border border-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-300 text-white placeholder-rose-400">
-                        </div>
-                        
-                        <div>
-                            <label for="phone" class="block mb-2 font-medium">Phone Number</label>
-                            <input type="tel" id="phone" name="phone" required 
-                                   class="w-full px-4 py-3 rounded-lg bg-rose-900 border border-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-300 text-white placeholder-rose-400">
-                        </div>
-                        
-                        <div>
-                            <label for="service" class="block mb-2 font-medium">Service</label>
-                            <select id="service" name="service" required 
-                                    class="w-full px-4 py-3 rounded-lg bg-rose-900 border border-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-300 text-white">
-                                <option value="" disabled selected>Select a service</option>
-                                <option value="haircut">Haircut</option>
-                                <option value="facial">Facial</option>
-                                <option value="manicure">Manicure</option>
-                                <option value="pedicure">Pedicure</option>
-                                <option value="makeup">Makeup</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                        
-                        <div>
-                            <label for="date" class="block mb-2 font-medium">Preferred Date</label>
-                            <input type="date" id="date" name="date" required 
-                                   class="w-full px-4 py-3 rounded-lg bg-rose-900 border border-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-300 text-white">
-                        </div>
-                        
-                        <div>
-                            <label for="message" class="block mb-2 font-medium">Special Requests</label>
-                            <textarea id="message" name="message" rows="4" 
-                                      class="w-full px-4 py-3 rounded-lg bg-rose-900 border border-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-300 text-white placeholder-rose-400"></textarea>
-                        </div>
-                        
-                        <button type="submit" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-bold py-3 px-4 rounded-lg transition duration-300">
-                            Book Appointment
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-rose-900 text-white py-12">
-        <div class="container mx-auto px-6">
-            <div class="grid md:grid-cols-4 gap-8">
-                <div>
-                    <h3 class="text-xl font-bold mb-4">Lavanya Beauty Parlour</h3>
-                    <p class="text-rose-300">Your destination for premium beauty treatments and relaxation experiences.</p>
-                </div>
-                
-                <div>
-                    <h4 class="font-bold mb-4">Quick Links</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#home" class="text-rose-300 hover:text-white transition">Home</a></li>
-                        <li><a href="#services" class="text-rose-300 hover:text-white transition">Services</a></li>
-                        <li><a href="#gallery" class="text-rose-300 hover:text-white transition">Gallery</a></li>
-                        <li><a href="#testimonials" class="text-rose-300 hover:text-white transition">Testimonials</a></li>
-                        <li><a href="#contact" class="text-rose-300 hover:text-white transition">Contact</a></li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h4 class="font-bold mb-4">Services</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-rose-300 hover:text-white transition">Hair Care</a></li>
-                        <li><a href="#" class="text-rose-300 hover:text-white transition">Skin Care</a></li>
-                        <li><a href="#" class="text-rose-300 hover:text-white transition">Nail Care</a></li>
-                        <li><a href="#" class="text-rose-300 hover:text-white transition">Makeup</a></li>
-                        <li><a href="#" class="text-rose-300 hover:text-white transition">Waxing</a></li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h4 class="font-bold mb-4">Connect With Us</h4>
-                    <div class="flex space-x-4 mb-4">
-                        <a href="#" class="text-rose-300 hover:text-white text-xl transition"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="text-rose-300 hover:text-white text-xl transition"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-rose-300 hover:text-white text-xl transition"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-rose-300 hover:text-white text-xl transition"><i class="fab fa-pinterest"></i></a>
-                    </div>
-                    <p class="text-rose-300">Subscribe to our newsletter for special offers.</p>
-                </div>
-            </div>
-            
-            <div class="border-t border-rose-800 mt-12 pt-8 text-center text-rose-400">
-                <p>&copy; 2023 Lavanya Beauty Parlour. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // Mobile Menu Toggle
-        document.getElementById('menu-toggle').addEventListener('click', function() {
-            document.getElementById('mobile-menu').classList.toggle('hidden');
-        });
         
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-                
-                // Close mobile menu if open
-                document.getElementById('mobile-menu').classList.add('hidden');
-            });
-        });
+        <!-- Mobile menu button -->
+        <div class="md:hidden">
+          <button id="menu-toggle" class="text-rose-800 focus:outline-none" aria-label="Toggle menu">
+            <i class="fas fa-bars text-2xl"></i>
+          </button>
+        </div>
         
-        // Form submission
-        document.getElementById('booking-form').addEventListener('submit', function(e) {
-            e.preventDefault();
+        <!-- Desktop Menu -->
+        <div class="hidden md:flex space-x-8">
+          <a href="#home" class="text-rose-800 hover:text-rose-600 transition">Home</a>
+          <a href="#services" class="text-rose-800 hover:text-rose-600 transition">Services</a>
+          <a href="#gallery" class="text-rose-800 hover:text-rose-600 transition">Gallery</a>
+          <a href="#testimonials" class="text-rose-800 hover:text-rose-600 transition">Testimonials</a>
+          <a href="#contact" class="text-rose-800 hover:text-rose-600 transition">Contact</a>
+        </div>
+      </div>
+      
+      <!-- Mobile Menu -->
+      <div id="mobile-menu" class="hidden md:hidden py-4">
+        <a href="#home" class="block py-2 text-rose-800 hover:text-rose-600 transition">Home</a>
+        <a href="#services" class="block py-2 text-rose-800 hover:text-rose-600 transition">Services</a>
+        <a href="#gallery" class="block py-2 text-rose-800 hover:text-rose-600 transition">Gallery</a>
+        <a href="#testimonials" class="block py-2 text-rose-800 hover:text-rose-600 transition">Testimonials</a>
+        <a href="#contact" class="block py-2 text-rose-800 hover:text-rose-600 transition">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="home" class="hero flex items-center justify-center text-center px-4">
+    <div class="max-w-4xl mx-auto fade-in">
+      <h1 class="text-5xl md:text-6xl font-bold text-rose-800 mb-6">Welcome to Lavanya Beauty</h1>
+      <p class="text-xl md:text-2xl text-rose-900 mb-8">Where beauty meets relaxation and your confidence is our priority</p>
+      <a href="#contact" class="bg-rose-700 hover:bg-rose-600 text-white px-8 py-3 rounded-full text-lg font-medium transition duration-300 inline-block">Book Now</a>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section id="services" class="py-20 bg-white">
+    <div class="container mx-auto px-6">
+      <h2 class="text-4xl font-bold text-center text-rose-800 mb-16">Our Services</h2>
+      
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <!-- Service 1 -->
+        <div class="service-card bg-rose-50 p-8 rounded-lg shadow-lg transition duration-300">
+          <div class="text-rose-700 text-4xl mb-4">
+            <i class="fas fa-cut"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-rose-800 mb-3">Hair Services</h3>
+          <ul class="space-y-2 text-rose-900">
+            <li class="flex justify-between border-b border-rose-100 pb-2">
+              <span>Women's Haircut</span>
+              <span class="font-medium">$45+</span>
+            </li>
+            <li class="flex justify-between border-b border-rose-100 pb-2">
+              <span>Children's Haircut</span>
+              <span class="font-medium">$30+</span>
+            </li>
+            <li class="flex justify-between border-b border-rose-100 pb-2">
+              <span>Blowout</span>
+              <span class="font-medium">$35+</span>
+            </li>
+            <li class="flex justify-between border-b border-rose-100 pb-2">
+              <span>Full Color</span>
+              <span class="font-medium">$75+</span>
+            </li>
+            <li class="flex justify-between">
+              <span>Highlights</span>
+              <span class="font-medium">$90+</span>
+            </li>
+          </ul>
+        </div>
+        
+        <!-- Service 2 -->
+        <div class="service-card bg-rose-50 p-8 rounded-lg shadow-lg transition duration-300">
+          <div class="text-rose-700 text-4xl mb-4">
+            <i class="fas fa-spa"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-rose-800 mb-3">Skin Care</h3>
+          <ul class="space-y-2 text-rose-900">
+            <li class="flex justify-between border-b border-rose-100 pb-2">
+              <span>Basic Facial</span>
+              <span class="font-medium">$60</span>
+            </li>
+            <li class="flex justify-between border-b border-rose-100 pb-2">
+              <span>Deep Cleansing</span>
+              <span class="font-medium">$85</span>
+            </li>
+            <li class="flex justify-between border-b border-rose-100 pb-2">
+              <span>Anti-Aging</span>
+              <span class="font-medium">$95</span>
+            </li>
+            <li class="flex justify-between border-b border-rose-100 pb-2">
+              <span>Acne Treatment</span>
+              <span class="font-medium">$90</span>
+            </li>
+            <li class="flex justify-between">
+              <span>Microdermabrasion</span>
+              <span class="font-medium">$120</span>
+            </li>
+          </ul>
+        </div>
+        
+        <!-- Service 3 -->
+        <div class="service-card bg-rose-50 p-8 rounded-lg shadow-lg transition duration-300">
+          <div class="text-rose-700 text-4xl mb-4">
+            <i class="fas fa-hand-sparkles"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-rose-800 mb-3">Nail Services</h3>
+          <ul class="space-y-2 text-rose-900">
+            <li class="flex justify-between border-b border-rose-100 pb-2">
+              <span>Manicure</span>
+              <span class="font-medium">$25+</span>
+            </li>
+            <li class="flex justify-between border-b border-rose-100 pb-2">
+              <span>Pedicure</span>
+              <span class="font-medium">$35+</span>
+            </li>
+            <li class="flex justify-between border-b border-rose-100 pb-2">
+              <span>Gel Polish</span>
+              <span class="font-medium">$15+</span>
+            </li>
+            <li class="flex justify-between border-b border-rose-100 pb-2">
+              <span>Acrylic Full Set</span>
+              <span class="font-medium">$50+</span>
+            </li>
+            <li class="flex justify-between">
+              <span>Nail Art</span>
+              <span class="font-medium">$5+</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery Section -->
+  <section id="gallery" class="py-20 bg-rose-50">
+    <div class="container mx-auto px-6">
+      <h2 class="text-4xl font-bold text-center text-rose-800 mb-16">My Gallery</h2>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Gallery Item placeholders for user to add -->
+        <div class="gallery-item overflow-hidden rounded-lg shadow-lg bg-rose-100 flex items-center justify-center text-rose-500 text-center p-12 text-lg italic">
+          <!-- paste your pic link here -->
+          Paste Your Picture Link Here
+        </div>
+        <div class="gallery-item overflow-hidden rounded-lg shadow-lg bg-rose-100 flex items-center justify-center text-rose-500 text-center p-12 text-lg italic">
+          <!-- paste your pic link here -->
+          Paste Your Picture Link Here
+        </div>
+        <div class="gallery-item overflow-hidden rounded-lg shadow-lg bg-rose-100 flex items-center justify-center text-rose-500 text-center p-12 text-lg italic">
+          <!-- paste your pic link here -->
+          Paste Your Picture Link Here
+        </div>
+        <div class="gallery-item overflow-hidden rounded-lg shadow-lg bg-rose-100 flex items-center justify-center text-rose-500 text-center p-12 text-lg italic">
+          <!-- paste your pic link here -->
+          Paste Your Picture Link Here
+        </div>
+        <div class="gallery-item overflow-hidden rounded-lg shadow-lg bg-rose-100 flex items-center justify-center text-rose-500 text-center p-12 text-lg italic">
+          <!-- paste your pic link here -->
+          Paste Your Picture Link Here
+        </div>
+        <div class="gallery-item overflow-hidden rounded-lg shadow-lg bg-rose-100 flex items-center justify-center text-rose-500 text-center p-12 text-lg italic">
+          <!-- paste your pic link here -->
+          Paste Your Picture Link Here
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section id="testimonials" class="py-20 bg-white">
+    <div class="container mx-auto px-6">
+      <h2 class="text-4xl font-bold text-center text-rose-800 mb-16">What My Clients Say</h2>
+      
+      <div class="testimonial-carousel">
+        <div class="testimonial-track" id="testimonialTrack">
+          <!-- Testimonial cards for sliding -->
+
+          <div class="testimonial-card">
+            <div class="stars mb-4" aria-label="5 stars" role="img">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+            </div>
+            <p>"The best facial I've ever had! My skin has never felt so refreshed. The esthetician was incredibly knowledgeable and made me feel completely relaxed."</p>
+            <div class="testimonial-info mt-6">
+              <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Sarah J." />
+              <div>
+                <h4>Sarah J.</h4>
+                <p>Regular Client</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="testimonial-card">
+            <div class="stars mb-4" aria-label="5 stars" role="img">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+            </div>
+            <p>"I've been coming to Lavanya Beauty Parlour for years. Their stylists are true artists who always give me the perfect cut and color. Worth every penny!"</p>
+            <div class="testimonial-info mt-6">
+              <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Michelle T." />
+              <div>
+                <h4>Michelle T.</h4>
+                <p>VIP Client</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="testimonial-card">
+            <div class="stars mb-4" aria-label="4.5 stars" role="img">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+            </div>
+            <p>"The ambiance is so peaceful and the staff is wonderful. My manicures last longer here than anywhere else I've been. Highly recommend!"</p>
+            <div class="testimonial-info mt-6">
+              <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Amanda K." />
+              <div>
+                <h4>Amanda K.</h4>
+                <p>New Client</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="testimonial-card">
+            <div class="stars mb-4" aria-label="5 stars" role="img">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+            </div>
+            <p>"Exceptional service and attention to detail! I love the relaxing atmosphere and the professional team."</p>
+            <div class="testimonial-info mt-6">
+              <img src="https://randomuser.me/api/portraits/women/55.jpg" alt="Emily R." />
+              <div>
+                <h4>Emily R.</h4>
+                <p>Happy Client</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="py-20 bg-rose-800 text-white">
+    <div class="container mx-auto px-6">
+      <h2 class="text-4xl font-bold text-center mb-16">Book Your Appointment</h2>
+      
+      <div class="grid md:grid-cols-2 gap-12">
+        <div>
+          <h3 class="text-2xl font-bold mb-6">Contact Information</h3>
+          <div class="space-y-6">
+            <div class="flex items-start gap-4">
+              <i class="fas fa-map-marker-alt mt-1 text-rose-300"></i>
+              <p>123 Beauty Lane, Glamour City, GC 12345</p>
+            </div>
+            <div class="flex flex-col gap-1">
+              <div class="flex items-center gap-4">
+                <i class="fas fa-phone-alt text-rose-300"></i>
+                <p>+91 8087442667</p>
+              </div>
+              <div class="flex items-center gap-4 ml-6">
+                <p>+91 74982 67821</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-4">
+              <i class="fas fa-envelope text-rose-300"></i>
+              <p>shweta.sontakke05@gmail.com</p>
+            </div>
+            <div class="flex items-center gap-4">
+              <i class="fas fa-clock text-rose-300"></i>
+              <p>Daily 11am - 8pm</p>
+            </div>
+          </div>
+          
+          <div class="mt-12">
+            <h3 class="text-2xl font-bold mb-6">Find Us</h3>
+            <div class="bg-white p-1 rounded-lg shadow-lg">
+              <!-- Google Maps Embed -->
+              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.215373510478!2d-73.9878449241646!3d40.74844097138986!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259a9b3117469%3A0xd134e199a405a163!2sEmpire%20State%20Building!5e0!3m2!1sen!2sus!4v1689877215838!5m2!1sen!2sus" 
+                      width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" ></iframe>
+            </div>
+          </div>
+        </div>
+        
+        <div>
+          <form id="booking-form" class="space-y-6" aria-label="Book your appointment">
+            <div>
+              <label for="name" class="block mb-2 font-medium">Full Name</label>
+              <input type="text" id="name" name="name" required 
+                     class="w-full px-4 py-3 rounded-lg bg-rose-900 border border-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-300 text-white placeholder-rose-400" />
+            </div>
             
-            // Here you would typically send the form data to a server
-            // For this example, we'll just show an alert
-            alert('Thank you for your booking request! We will contact you shortly to confirm your appointment.');
-            this.reset();
-        });
+            <div>
+              <label for="email" class="block mb-2 font-medium">Email</label>
+              <input type="email" id="email" name="email" required
+                     class="w-full px-4 py-3 rounded-lg bg-rose-900 border border-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-300 text-white placeholder-rose-400" />
+            </div>
+            
+            <div>
+              <label for="phone" class="block mb-2 font-medium">Phone Number</label>
+              <input type="tel" id="phone" name="phone" required
+                     class="w-full px-4 py-3 rounded-lg bg-rose-900 border border-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-300 text-white placeholder-rose-400" />
+            </div>
+            
+            <div>
+              <label for="service" class="block mb-2 font-medium">Service</label>
+              <select id="service" name="service" required
+                      class="w-full px-4 py-3 rounded-lg bg-rose-900 border border-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-300 text-white">
+                <option value="" disabled selected>Select a service</option>
+                <option value="haircut">Haircut</option>
+                <option value="facial">Facial</option>
+                <option value="manicure">Manicure</option>
+                <option value="pedicure">Pedicure</option>
+                <option value="makeup">Makeup</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            
+            <div>
+              <label for="date" class="block mb-2 font-medium">Preferred Date</label>
+              <input type="date" id="date" name="date" required
+                     class="w-full px-4 py-3 rounded-lg bg-rose-900 border border-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-300 text-white" />
+            </div>
+            
+            <div>
+              <label for="message" class="block mb-2 font-medium">Special Requests</label>
+              <textarea id="message" name="message" rows="4"
+                        class="w-full px-4 py-3 rounded-lg bg-rose-900 border border-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-300 text-white placeholder-rose-400"></textarea>
+            </div>
+            
+            <button type="submit" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-bold py-3 px-4 rounded-lg transition duration-300">
+              Book Appointment
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-rose-900 text-white py-12">
+    <div class="container mx-auto px-6">
+      <div class="grid md:grid-cols-4 gap-8">
+        <div>
+          <h3 class="text-xl font-bold mb-4">Lavanya Beauty Parlour</h3>
+          <p class="text-rose-300">Your destination for premium beauty treatments and relaxation experiences.</p>
+        </div>
         
-        // Testimonial animation on scroll
-        const testimonialCards = document.querySelectorAll('.testimonial-card');
+        <div>
+          <h4 class="font-bold mb-4">Quick Links</h4>
+          <ul class="space-y-2">
+            <li><a href="#home" class="text-rose-300 hover:text-white transition">Home</a></li>
+            <li><a href="#services" class="text-rose-300 hover:text-white transition">Services</a></li>
+            <li><a href="#gallery" class="text-rose-300 hover:text-white transition">Gallery</a></li>
+            <li><a href="#testimonials" class="text-rose-300 hover:text-white transition">Testimonials</a></li>
+            <li><a href="#contact" class="text-rose-300 hover:text-white transition">Contact</a></li>
+          </ul>
+        </div>
         
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
-            });
-        }, {
-            threshold: 0.1
-        });
+        <div>
+          <h4 class="font-bold mb-4">Services</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-rose-300 hover:text-white transition">Hair Care</a></li>
+            <li><a href="#" class="text-rose-300 hover:text-white transition">Skin Care</a></li>
+            <li><a href="#" class="text-rose-300 hover:text-white transition">Nail Care</a></li>
+            <li><a href="#" class="text-rose-300 hover:text-white transition">Makeup</a></li>
+            <li><a href="#" class="text-rose-300 hover:text-white transition">Waxing</a></li>
+          </ul>
+        </div>
         
-        testimonialCards.forEach(card => {
-            observer.observe(card);
+        <div>
+          <h4 class="font-bold mb-4">Connect With Us</h4>
+          <div class="flex space-x-4 mb-4">
+            <a href="#" class="text-rose-300 hover:text-white text-xl transition"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="text-rose-300 hover:text-white text-xl transition"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="text-rose-300 hover:text-white text-xl transition"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="text-rose-300 hover:text-white text-xl transition"><i class="fab fa-pinterest"></i></a>
+          </div>
+          <p class="text-rose-300">Subscribe to our newsletter for special offers.</p>
+        </div>
+      </div>
+      
+      <div class="border-t border-rose-800 mt-12 pt-8 text-center text-rose-400">
+        <p>&copy; 2023 Lavanya Beauty Parlour. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile Menu Toggle
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+      document.getElementById('mobile-menu').classList.toggle('hidden');
+    });
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
         });
-    </script>
+
+        // Close mobile menu if open
+        document.getElementById('mobile-menu').classList.add('hidden');
+      });
+    });
+
+    // Form submission
+    document.getElementById('booking-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      alert('Thank you for your booking request! We will contact you shortly to confirm your appointment.');
+      this.reset();
+    });
+
+    // Testimonial sliding carousel
+    (function setupTestimonialCarousel() {
+      const track = document.getElementById('testimonialTrack');
+      const cards = Array.from(track.children);
+      let currentIndex = 0;
+      const totalCards = cards.length;
+
+      function updateSlides() {
+        // Reset all cards classes
+        cards.forEach(card => {
+          card.classList.remove('active', 'prev', 'next', 'inactive');
+          card.style.order = null;
+        });
+
+        // Set classes for current, prev, and next cards
+        const prevIndex = (currentIndex - 1 + totalCards) % totalCards;
+        const nextIndex = (currentIndex + 1) % totalCards;
+
+        cards[currentIndex].classList.add('active');
+        cards[prevIndex].classList.add('prev');
+        cards[nextIndex].classList.add('next');
+
+        // Hide other cards
+        cards.forEach((card, i) => {
+          if (i !== currentIndex && i !== prevIndex && i !== nextIndex) {
+            card.classList.add('inactive');
+          }
+        });
+
+        // Optionally, order can be adjusted for z-index stacking if needed
+      }
+
+      updateSlides();
+
+      setInterval(() => {
+        currentIndex = (currentIndex + 1) % totalCards;
+        updateSlides();
+      }, 10000); // Every 10 sec
+    })();
+  </script>
 </body>
 </html>
